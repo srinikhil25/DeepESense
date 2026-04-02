@@ -84,6 +84,12 @@ def validate_and_report(
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     df = pd.read_csv(inp_csv)
     n0 = len(df)
+    bandgap_col = "bandgap_eV" if "bandgap_eV" in df.columns else ("band_gap" if "band_gap" in df.columns else None)
+    fe_col = (
+        "formation_energy_per_atom_eV"
+        if "formation_energy_per_atom_eV" in df.columns
+        else ("formation_energy_per_atom" if "formation_energy_per_atom" in df.columns else None)
+    )
 
     # ---- integrity: required columns
     required_cols = ["material_id", "formula", "structure"]
@@ -110,10 +116,11 @@ def validate_and_report(
     df["nsites"] = df["_structure_obj"].apply(lambda s: int(len(s)))
 
     # ---- tiers
-    if "bandgap_eV" in df.columns:
-        df["utility_tier"] = df["bandgap_eV"].apply(_utility_tier)
-    else:
-        df["utility_tier"] = "Unknown (no bandgap_eV column)"
+    if "utility_tier" not in df.columns:
+        if bandgap_col is not None:
+            df["utility_tier"] = df[bandgap_col].apply(_utility_tier)
+        else:
+            df["utility_tier"] = "Unknown (no bandgap column)"
 
     # ---- Chemical diversity (element counts)
     element_counts: Dict[str, int] = {}
@@ -148,17 +155,17 @@ def validate_and_report(
     # Scatter: atomic volume vs formation energy
     fig2 = plt.figure(figsize=(6.6, 5.2))
     ax2 = fig2.add_subplot(1, 1, 1)
-    if "formation_energy_per_atom_eV" in df.columns:
+    if fe_col is not None:
         ax2.scatter(
             df["atomic_volume_A3_per_atom"],
-            df["formation_energy_per_atom_eV"],
+            df[fe_col],
             s=18,
             alpha=0.75,
         )
         ax2.set_ylabel("Formation energy per atom (eV)")
     else:
         ax2.scatter(df["atomic_volume_A3_per_atom"], [0] * len(df), s=18, alpha=0.75)
-        ax2.set_ylabel("(missing formation_energy_per_atom_eV)")
+        ax2.set_ylabel("(missing formation_energy_per_atom column)")
     ax2.set_xlabel("Atomic volume (Å³/atom)")
     ax2.set_title("Atomic Volume vs Formation Energy")
     fig2.tight_layout()
@@ -169,14 +176,14 @@ def validate_and_report(
     # Histogram: bandgaps
     fig3 = plt.figure(figsize=(6.6, 5.2))
     ax3 = fig3.add_subplot(1, 1, 1)
-    if "bandgap_eV" in df.columns:
-        bg = pd.to_numeric(df["bandgap_eV"], errors="coerce").dropna()
+    if bandgap_col is not None:
+        bg = pd.to_numeric(df[bandgap_col], errors="coerce").dropna()
         ax3.hist(bg, bins=40)
         ax3.set_xlabel("Band gap (eV)")
         ax3.set_ylabel("Count")
         ax3.set_title("Bandgap Distribution (Electronic Dark Matter peak at 0 eV)")
     else:
-        ax3.text(0.5, 0.5, "bandgap_eV column missing", ha="center", va="center")
+        ax3.text(0.5, 0.5, "bandgap column missing", ha="center", va="center")
         ax3.set_axis_off()
     fig3.tight_layout()
     fig3_path = figures_dir / "bandgap_histogram.png"
@@ -200,11 +207,19 @@ def validate_and_report(
         "removed_rows_total": int(removed),
         "null_formula_rows_in_input": null_formula_n,
         "null_structure_rows_in_input": null_structure_n,
-        "max_ehull_eV": float(pd.to_numeric(df.get("energy_above_hull_eV", pd.Series(dtype=float)), errors="coerce").max())
-        if "energy_above_hull_eV" in df.columns
+        "max_ehull_eV": float(
+            pd.to_numeric(
+                df.get(
+                    "energy_above_hull_eV",
+                    df.get("energy_above_hull", pd.Series(dtype=float)),
+                ),
+                errors="coerce",
+            ).max()
+        )
+        if ("energy_above_hull_eV" in df.columns or "energy_above_hull" in df.columns)
         else None,
-        "bandgap_zero_count": int((pd.to_numeric(df.get("bandgap_eV", pd.Series(dtype=float)), errors="coerce") == 0.0).sum())
-        if "bandgap_eV" in df.columns
+        "bandgap_zero_count": int((pd.to_numeric(df.get(bandgap_col, pd.Series(dtype=float)), errors="coerce") == 0.0).sum())
+        if bandgap_col is not None
         else None,
         "top10_exotic_elements": top10_exotic,
     }

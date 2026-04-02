@@ -19,40 +19,29 @@ copy .env.example .env
 
 Then edit `.env` and set `MP_API_KEY`.
 
-## Discovery: build a candidate-structure dataset (dry run default)
+## Full data acquisition (master dataset)
 
-This fetches **stable-ish** ternary/quaternary materials (default \(E_{hull} \le 0.02\) eV/atom) that are **electronically under-characterized** (by default `has_props == False` in MP Summary). It then applies a **uniqueness filter** (rare element combinations + chemistry motifs) and writes:
+This fetches all Materials Project entries with \(E_{hull} < 0.05\) eV/atom in API batches and writes:
 
-- `data/raw/mp_candidates_v1.csv`
+- `data/raw/deepesense_master_v1.csv`
+- `logs/data_summary.txt`
 
-Run the default **dry run (10 results)**:
+Run full acquisition:
 
 ```bash
 python -m src.discovery_engine -v
 ```
 
-Run a full query (no limit):
+Use custom batching/checkpoint intervals:
 
 ```bash
-python -m src.discovery_engine --no-limit -v
+python -m src.discovery_engine --batch-size 1000 --save-every 1000 -v
 ```
 
-Change the stability threshold:
+Test with a cap (optional):
 
 ```bash
-python -m src.discovery_engine --ehull-max 0.01 -v
-```
-
-Skip structure retrieval (composition-only workflow):
-
-```bash
-python -m src.discovery_engine --no-structures -v
-```
-
-Include materials that already have electronic properties (`has_props == True`):
-
-```bash
-python -m src.discovery_engine --allow-has-props -v
+python -m src.discovery_engine --max-records 5000 -v
 ```
 
 ## Feature engineering (matminer)
