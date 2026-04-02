@@ -5,3 +5,5 @@ pandas
 python-dotenv
 scikit-learn
 matplotlib
+tqdm
+xgboost

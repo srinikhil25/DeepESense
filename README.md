@@ -46,10 +46,10 @@ python -m src.discovery_engine --max-records 5000 -v
 
 ## Feature engineering (matminer)
 
-Generate compositional (Magpie) and structural descriptors for clustering/novelty detection:
+Generate compositional (Magpie) and structural (`DensityFeatures`) descriptors for the full master dataset:
 
 ```bash
-python -m src.featurizer --in data/raw/mp_candidates_v1.csv --out data/processed/mp_candidates_features_v1.csv -v
+python -m src.featurizer --in data/raw/deepesense_master_v1.csv --out data/processed/deepesense_features_v1.csv --n-jobs -1 -v
 ```
 
 ## Validation / QA (pictorial proof)
