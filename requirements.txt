@@ -1,0 +1,7 @@
+mp-api
+pymatgen
+matminer
+pandas
+python-dotenv
+scikit-learn
+matplotlib

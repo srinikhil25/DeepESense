@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Secrets
+.env
+
+# Data outputs
+data/raw/
+data/processed/
+
+# Reports / figures
+reports/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+
+# Data
+data/
+reports/
