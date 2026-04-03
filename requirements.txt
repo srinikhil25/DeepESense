@@ -7,3 +7,6 @@ scikit-learn
 matplotlib
 tqdm
 xgboost
+# GNN pipeline (install wheels per https://pytorch-geometric.readthedocs.io/ if needed)
+torch>=2.1.0
+torch-geometric>=2.4.0
