@@ -30,3 +30,6 @@ Thumbs.db
 data/
 reports/
 logs/
+models/
+check_master_counts.py
+results/
