@@ -105,3 +105,11 @@ python -m src.compare_gnn_xgboost --discoveries results/deepesense_discoveries_v
 ```
 
 Writes `results/compare_gnn_xgboost_top10_v1.csv`.
+
+### Final discovery figure (GNN vs XGB)
+
+After generating the comparison CSV:
+
+```bash
+python -m src.final_discovery_viz --in results/compare_gnn_xgboost_top10_v1.csv --out results/figures/gnn_vs_xgb_correction.png
+```
