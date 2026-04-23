@@ -1,0 +1,23 @@
+# Optional transport-related Python deps (device / Boltzmann path).
+#
+# --- Safe on Windows + Linux ---
+# ASE is used by pymatgen's BoltzTraP2 loader (atoms conversion).
+ase>=3.22.0
+#
+# --- BoltzTraP2 (semiclassical Seebeck / sigma / kappa_el) ---
+# Native Windows: ``pip install BoltzTraP2`` often FAILS: the sdist builds bundled
+# spglib and its test suite uses ``setenv`` (POSIX), which breaks under MinGW.
+#
+# Recommended on your setup (QE already in WSL):
+#   wsl
+#   cd /mnt/d/DeepESense   # or your Linux clone
+#   python3 -m venv .venv-bt2 && source .venv-bt2/bin/activate
+#   pip install -r requirements.txt -r requirements-transport.txt
+#   pip install BoltzTraP2
+#   python -m src.run_boltztrap2_qe --job-dir dft_validation_qe_v1/mp-1067 -v
+#
+# Alternative: Linux/macOS machine, or conda-forge on Linux:
+#   conda install -c conda-forge boltztrap2 ase
+#
+# Do NOT list BoltzTraP2 in this file if you want ``pip install -r requirements-transport.txt``
+# to succeed on Windows; install it only in WSL/Linux as above.

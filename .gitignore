@@ -27,3 +27,4 @@ debug.log
 
 # Claude Code local state
 .claude/
+.venv-bt2/
