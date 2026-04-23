@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-1182442",
+  "formula": "BO2F3",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 5.4884086,
+  "stage2_xgb_eV": 5.48840856552124,
+  "stage2_gnn_eV": 2.786625862121582,
+  "disagreement_eV": -2.701782703399658,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    5,
+    4,
+    4
+  ],
+  "kpoints_nscf": [
+    9,
+    7,
+    7
+  ],
+  "nbnd": 131,
+  "n_atoms": 24,
+  "lattice_abc": [
+    5.8896402437764435,
+    7.44023026,
+    7.8065856346176
+  ],
+  "elements": [
+    "B",
+    "F",
+    "O"
+  ],
+  "pseudo_map": {
+    "O": "O.pbe-n-kjpaw_psl.0.1.UPF",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "B": "b_pbe_v1.4.uspp.F.UPF"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-1207345",
+  "formula": "Cs2PrF6",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 4.618681,
+  "stage2_xgb_eV": 4.618680953979492,
+  "stage2_gnn_eV": 6.510811805725098,
+  "disagreement_eV": 1.8921308517456052,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    4,
+    4,
+    8
+  ],
+  "kpoints_nscf": [
+    7,
+    7,
+    14
+  ],
+  "nbnd": 149,
+  "n_atoms": 9,
+  "lattice_abc": [
+    7.260809313723002,
+    7.260809313723003,
+    3.836810899999999
+  ],
+  "elements": [
+    "Cs",
+    "F",
+    "Pr"
+  ],
+  "pseudo_map": {
+    "Cs": "Cs_pbe_v1.uspp.F.UPF",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Pr": "Pr.paw.z_13.atompaw.wentzcovitch.v1.2.upf"
+  }
+}

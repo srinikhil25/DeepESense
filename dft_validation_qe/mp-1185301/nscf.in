@@ -1,0 +1,40 @@
+&CONTROL
+  pseudo_dir = '/mnt/d/DeepESense/pseudo/SSSP_1.3.0_PBE_efficiency',
+  calculation = 'nscf',
+  restart_mode = 'from_scratch',
+  verbosity = 'high',
+/
+&SYSTEM
+  degauss = 0.005,
+  ecutrho = 480.0,
+  ecutwfc = 60.0,
+  nbnd = 30,
+  occupations = 'smearing',
+  smearing = 'marzari-vanderbilt',
+  ibrav = 0,
+  nat = 4,
+  ntyp = 2,
+/
+&ELECTRONS
+  conv_thr = 1d-08,
+  electron_maxstep = 200,
+  mixing_beta = 0.4,
+/
+&IONS
+/
+&CELL
+/
+ATOMIC_SPECIES
+  F  18.9984 f_pbe_v1.4.uspp.F.UPF
+  Li  6.9410 li_pbe_v1.4.uspp.F.UPF
+ATOMIC_POSITIONS crystal
+  Li 0.333333 0.666667 0.381154
+  Li 0.666667 0.333333 0.881154
+  F 0.333333 0.666667 0.993844
+  F 0.666667 0.333333 0.493844
+K_POINTS automatic
+  17 17 11 0 0 0
+CELL_PARAMETERS angstrom
+  1.530470 -2.650852 0.000000
+  1.530470 2.650852 0.000000
+  0.000000 0.000000 4.807325

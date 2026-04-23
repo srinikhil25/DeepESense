@@ -1,0 +1,18 @@
+{
+  "parser_version": "qe_validation_parse/1.0",
+  "qe_dir": "dft_validation_qe_v2",
+  "n_candidate_dirs": 11,
+  "n_with_finite_gap": 2,
+  "n_metallic": 2,
+  "n_converged": 5,
+  "status_breakdown": {
+    "missing_output": 2,
+    "ok": 2,
+    "no_eigenvalues": 4,
+    "odd_electron_count": 1,
+    "metallic": 2
+  },
+  "gap_tol_eV": 0.001,
+  "scf_name": "scf.out",
+  "nscf_name": "nscf.out"
+}

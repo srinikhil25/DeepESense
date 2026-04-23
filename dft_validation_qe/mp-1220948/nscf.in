@@ -1,0 +1,55 @@
+&CONTROL
+  pseudo_dir = '/mnt/d/DeepESense/pseudo/SSSP_1.3.0_PBE_efficiency',
+  calculation = 'nscf',
+  restart_mode = 'from_scratch',
+  verbosity = 'high',
+/
+&SYSTEM
+  degauss = 0.005,
+  ecutrho = 480.0,
+  ecutwfc = 60.0,
+  nbnd = 206,
+  occupations = 'smearing',
+  smearing = 'marzari-vanderbilt',
+  ibrav = 0,
+  nat = 18,
+  ntyp = 3,
+/
+&ELECTRONS
+  conv_thr = 1d-08,
+  electron_maxstep = 200,
+  mixing_beta = 0.4,
+/
+&IONS
+/
+&CELL
+/
+ATOMIC_SPECIES
+  F  18.9984 f_pbe_v1.4.uspp.F.UPF
+  Na  22.9898 na_pbe_v1.5.uspp.F.UPF
+  Pr  140.9076 Pr.paw.z_13.atompaw.wentzcovitch.v1.2.upf
+ATOMIC_POSITIONS crystal
+  Na 0.669247 0.470371 0.178950
+  Na 0.662049 0.991449 0.695154
+  Na 0.329633 0.423238 0.913096
+  Pr 0.002936 0.994235 0.002215
+  Pr 0.997328 0.493730 0.509676
+  Pr 0.335475 0.917400 0.412793
+  F 0.262100 0.619881 0.134373
+  F 0.279730 0.124635 0.630020
+  F 0.980446 0.377439 0.889939
+  F 0.970018 0.884167 0.390745
+  F 0.755683 0.727872 0.235832
+  F 0.752833 0.236451 0.748606
+  F 0.371129 0.004860 0.033521
+  F 0.369009 0.536392 0.505437
+  F 0.588306 0.704927 0.667195
+  F 0.592518 0.166530 0.200078
+  F 0.044585 0.811986 0.774760
+  F 0.036974 0.276439 0.315607
+K_POINTS automatic
+  9 7 7 0 0 0
+CELL_PARAMETERS angstrom
+  6.090504 0.000000 0.000000
+  3.034956 6.451771 0.000000
+  3.036880 2.117560 6.106231

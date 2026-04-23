@@ -1,0 +1,15 @@
+{
+  "stage": 2,
+  "stage1_csv": "results\\deepesense_dark_matter_unfolded_v1.csv",
+  "gnn_ckpt": "models\\cgcnn_v1.pt",
+  "xgb_model": "models\\baseline_xgboost_v1.json",
+  "top_k": 50,
+  "agree_tol_eV": 0.3,
+  "strong_disagree_eV": 1.0,
+  "finite_gap_tol_eV": 0.1,
+  "xgb_imputation_source": "model_meta_sidecar",
+  "n_with_gnn": 50,
+  "n_with_xgb": 50,
+  "n_strong_disagreement": 6,
+  "n_finite_gap_consensus": 50
+}

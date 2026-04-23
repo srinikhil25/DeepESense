@@ -1,0 +1,35 @@
+{
+  "material_id": "mp-1185301",
+  "formula": "LiF",
+  "selection_reason": "finite_gap_consensus",
+  "stage1_xgb_eV": 7.5493636,
+  "stage2_xgb_eV": 7.549363613128662,
+  "stage2_gnn_eV": 6.990076541900635,
+  "disagreement_eV": -0.5592870712280273,
+  "agreement_class": "mild",
+  "kpoints_scf": [
+    10,
+    10,
+    7
+  ],
+  "kpoints_nscf": [
+    17,
+    17,
+    11
+  ],
+  "nbnd": 30,
+  "n_atoms": 4,
+  "lattice_abc": [
+    3.0609398174710587,
+    3.0609398174710587,
+    4.8073245700000005
+  ],
+  "elements": [
+    "F",
+    "Li"
+  ],
+  "pseudo_map": {
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Li": "li_pbe_v1.4.uspp.F.UPF"
+  }
+}

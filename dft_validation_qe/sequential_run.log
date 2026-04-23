@@ -1,0 +1,50 @@
+=== Sequential QE run started at Thu Apr 16 15:13:40 JST 2026 ===
+pw.x: /home/srig/miniforge3/envs/qe/bin/pw.x
+
+[1/8] ===== mp-1207345 =====
+  SCF start: Thu Apr 16 15:13:41 JST 2026
+  SCF CONVERGED in 3848s
+  NSCF start: Thu Apr 16 16:17:50 JST 2026
+  NSCF DONE in 2756s
+  Memory after: 527Mi/7.6Gi
+
+[2/8] ===== mp-1209229 =====
+  SCF start: Thu Apr 16 17:03:47 JST 2026
+  SCF CONVERGED in 4633s
+  NSCF start: Thu Apr 16 18:21:00 JST 2026
+  NSCF DONE in 10573s
+  Memory after: 534Mi/7.6Gi
+
+[3/8] ===== mp-1220948 =====
+  SCF start: Thu Apr 16 21:17:14 JST 2026
+  SCF FAILED in 2753s
+
+[4/8] ===== mp-1182442 =====
+  SCF start: Thu Apr 16 22:03:07 JST 2026
+  SCF CONVERGED in 895s
+  NSCF start: Thu Apr 16 22:18:02 JST 2026
+  NSCF FAILED in 2601s
+  Memory after: 535Mi/7.6Gi
+
+[5/8] ===== mp-640562 =====
+  SCF start: Thu Apr 16 23:01:23 JST 2026
+  SCF FAILED in 1693s
+
+[6/8] ===== mp-622591 =====
+
+=== RECOVERY RUN at Fri Apr 17 00:32:44 JST 2026 ===
+
+[RECOVERY] ===== mp-1182442 (NSCF only) =====
+  NSCF start: Fri Apr 17 00:32:44 JST 2026
+  NSCF DONE in 4906s
+  Memory after: 542Mi/7.6Gi
+
+[RECOVERY 1/4] ===== mp-640562 =====
+  SCF already converged — skipping to NSCF
+  NSCF start: Fri Apr 17 01:54:32 JST 2026
+  NSCF FAILED in 7s
+  Memory after: 671Mi/7.6Gi
+  Cleaned wfc files
+
+[RECOVERY 2/4] ===== mp-622591 =====
+  SCF start: Fri Apr 17 01:54:39 JST 2026

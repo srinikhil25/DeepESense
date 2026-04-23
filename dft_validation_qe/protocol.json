@@ -1,0 +1,19 @@
+{
+  "protocol": {
+    "xc_functional": "PBE",
+    "pseudo_family": "SSSP_efficiency_v1.3_PBE",
+    "ecutwfc_Ry": 60.0,
+    "ecutrho_Ry": 480.0,
+    "kpoint_density_per_inv_ang": 0.2,
+    "nscf_kpoint_density_per_inv_ang": 0.12,
+    "occupations": "smearing",
+    "smearing": "marzari-vanderbilt",
+    "degauss_Ry": 0.005,
+    "conv_thr": 1e-08,
+    "mixing_beta": 0.4,
+    "electron_maxstep": 200,
+    "nbnd_padding": 16
+  },
+  "stage2_csv": "results\\deepesense_stage2_refined_v1.csv",
+  "master_csv": "D:\\DeepESense\\data\\raw\\deepesense_master_v1.csv"
+}

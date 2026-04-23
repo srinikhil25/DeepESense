@@ -1,0 +1,39 @@
+{
+  "material_id": "mp-1209229",
+  "formula": "RbHoBeF6",
+  "selection_reason": "finite_gap_consensus",
+  "stage1_xgb_eV": 7.4006963,
+  "stage2_xgb_eV": 7.400696277618408,
+  "stage2_gnn_eV": 7.326879501342773,
+  "disagreement_eV": -0.0738167762756347,
+  "agreement_class": "agree",
+  "kpoints_scf": [
+    5,
+    5,
+    4
+  ],
+  "kpoints_nscf": [
+    8,
+    9,
+    7
+  ],
+  "nbnd": 210,
+  "n_atoms": 18,
+  "lattice_abc": [
+    6.543845,
+    5.876583,
+    7.193724682772131
+  ],
+  "elements": [
+    "Be",
+    "F",
+    "Ho",
+    "Rb"
+  ],
+  "pseudo_map": {
+    "Be": "be_pbe_v1.4.uspp.F.UPF",
+    "Rb": "Rb_ONCV_PBE-1.0.oncvpsp.upf",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Ho": "Ho.paw.z_21.atompaw.wentzcovitch.v1.2.upf"
+  }
+}

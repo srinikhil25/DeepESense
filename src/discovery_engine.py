@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import logging
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -100,12 +101,108 @@ def _write_summary(
     summary_path.write_text("".join(lines), encoding="utf-8")
 
 
+# Default per-pass element-count ranges. Each pass issues one MP search with
+# ``num_elements`` constrained to the range, so no single response ever tries
+# to buffer the full 77k-doc catalog at once. The ranges below were picked so
+# each bucket lands in the 3k–18k doc range for the default ehull cut of 0.05
+# eV/atom — comfortable for both RAM and orjson's parse buffer.
+DEFAULT_NELEMENTS_PASSES: Tuple[Tuple[int, int], ...] = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 12),  # heavy-alloy tail; usually <1k docs
+)
+
+
 @dataclass(frozen=True)
 class AcquisitionConfig:
     ehull_max_eV: float = 0.05
     batch_size: int = 1000
     save_every: int = 1000
     max_records: Optional[int] = None
+    nelements_passes: Tuple[Tuple[int, int], ...] = DEFAULT_NELEMENTS_PASSES
+
+
+def _run_search_pass(
+    mpr: "MPRester",
+    criteria: Dict[str, Any],
+    fields: List[str],
+    cfg: AcquisitionConfig,
+    out_csv: Path,
+    state: Dict[str, Any],
+) -> None:
+    """
+    Run one ``materials.summary.search`` call and stream its rows into the
+    on-disk CSV via the shared ``state`` dict. Keeping state external lets the
+    outer per-nelements loop resume cleanly after every pass and guarantees
+    that a crash mid-pass still leaves every prior pass fully persisted.
+    """
+    docs = mpr.materials.summary.search(
+        **criteria,
+        fields=fields,
+        chunk_size=cfg.batch_size,
+        num_chunks=None,
+    )
+    try:
+        for doc in docs:
+            formula = getattr(doc, "formula_pretty", None)
+            mid = getattr(doc, "material_id", None)
+            if not mid or not formula:
+                continue
+
+            s = getattr(doc, "structure", None)
+            if s is None:
+                continue
+            try:
+                structure_dict = s.as_dict()
+            except Exception:
+                structure_dict = s if isinstance(s, dict) else None
+            if structure_dict is None:
+                continue
+
+            row = {
+                "material_id": mid,
+                "formula": formula,
+                "structure": json.dumps(structure_dict),
+                "band_gap": getattr(doc, "band_gap", None),
+                "formation_energy_per_atom": getattr(doc, "formation_energy_per_atom", None),
+                "is_theoretical": getattr(doc, "theoretical", None),
+                "symmetry": _extract_spacegroup(doc),
+                "energy_above_hull": getattr(doc, "energy_above_hull", None),
+            }
+            row["utility_tier"] = utility_tier_from_formula(row["formula"])
+
+            state["rows_buffer"].append(row)
+            state["total_saved"] += 1
+            if row["band_gap"] is None:
+                state["missing_bg_count"] += 1
+            tier = row["utility_tier"]
+            state["tier_counts"][tier] = state["tier_counts"].get(tier, 0) + 1
+
+            if len(state["rows_buffer"]) >= cfg.save_every:
+                _write_progress(state["rows_buffer"], out_csv, append=not state["is_first_flush"])
+                state["is_first_flush"] = False
+                state["rows_buffer"].clear()
+                LOG.info("Checkpoint saved: %d records", state["total_saved"])
+
+            if cfg.max_records is not None and state["total_saved"] >= cfg.max_records:
+                LOG.warning("Reached max-records=%d; stopping early.", cfg.max_records)
+                state["stop_early"] = True
+                return
+    finally:
+        # Flush any tail rows from this pass before the docs list is released,
+        # so a mid-next-pass crash never loses this pass's data.
+        if state["rows_buffer"]:
+            _write_progress(state["rows_buffer"], out_csv, append=not state["is_first_flush"])
+            state["is_first_flush"] = False
+            state["rows_buffer"].clear()
+        # Explicitly drop the docs list and force GC so the next pass starts
+        # with a clean allocator — critical on Windows under pagefile pressure.
+        del docs
+        gc.collect()
 
 
 def fetch_master_dataset(api_key: str, cfg: AcquisitionConfig, out_csv: Path, summary_path: Path) -> int:
@@ -119,14 +216,18 @@ def fetch_master_dataset(api_key: str, cfg: AcquisitionConfig, out_csv: Path, su
         "symmetry",
         "energy_above_hull",
     ]
-    criteria: Dict[str, Any] = {"energy_above_hull": (0.0, cfg.ehull_max_eV)}
-    rows_buffer: List[Dict[str, Any]] = []
-    total_saved = 0
-    missing_bg_count = 0
-    tier_counts: Dict[str, int] = {}
+    base_criteria: Dict[str, Any] = {"energy_above_hull": (0.0, cfg.ehull_max_eV)}
+
+    state: Dict[str, Any] = {
+        "rows_buffer": [],
+        "total_saved": 0,
+        "missing_bg_count": 0,
+        "tier_counts": {},
+        "is_first_flush": True,
+        "stop_early": False,
+    }
     partial = False
     last_error: Optional[str] = None
-    is_first_flush = True
 
     # Start a fresh file for this run, then append incrementally.
     out_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -135,74 +236,44 @@ def fetch_master_dataset(api_key: str, cfg: AcquisitionConfig, out_csv: Path, su
 
     try:
         with MPRester(api_key) as mpr:
-            LOG.info("Starting full acquisition: ehull < %.3f eV/atom", cfg.ehull_max_eV)
-            docs = mpr.materials.summary.search(
-                **criteria,
-                fields=fields,
-                chunk_size=cfg.batch_size,
-                num_chunks=None,
+            LOG.warning(
+                "Starting chunked acquisition: ehull < %.3f eV/atom across %d nelements passes",
+                cfg.ehull_max_eV, len(cfg.nelements_passes),
             )
-
-            for idx, doc in enumerate(docs, start=1):
-                formula = getattr(doc, "formula_pretty", None)
-                mid = getattr(doc, "material_id", None)
-                if not mid or not formula:
-                    continue
-
-                s = getattr(doc, "structure", None)
-                if s is None:
-                    continue
-                try:
-                    structure_dict = s.as_dict()
-                except Exception:
-                    structure_dict = s if isinstance(s, dict) else None
-                if structure_dict is None:
-                    continue
-
-                row = {
-                    "material_id": mid,
-                    "formula": formula,
-                    "structure": json.dumps(structure_dict),
-                    "band_gap": getattr(doc, "band_gap", None),
-                    "formation_energy_per_atom": getattr(doc, "formation_energy_per_atom", None),
-                    "is_theoretical": getattr(doc, "theoretical", None),
-                    "symmetry": _extract_spacegroup(doc),
-                    "energy_above_hull": getattr(doc, "energy_above_hull", None),
-                }
-                row["utility_tier"] = utility_tier_from_formula(row["formula"])
-                rows_buffer.append(row)
-                total_saved += 1
-                if row["band_gap"] is None:
-                    missing_bg_count += 1
-                tier = row["utility_tier"]
-                tier_counts[tier] = tier_counts.get(tier, 0) + 1
-
-                if len(rows_buffer) >= cfg.save_every:
-                    _write_progress(rows_buffer, out_csv, append=not is_first_flush)
-                    is_first_flush = False
-                    rows_buffer.clear()
-                    LOG.info("Checkpoint saved: %d records", total_saved)
-
-                if cfg.max_records is not None and total_saved >= cfg.max_records:
-                    LOG.warning("Reached max-records=%d; stopping early.", cfg.max_records)
+            for pass_idx, (ne_lo, ne_hi) in enumerate(cfg.nelements_passes, start=1):
+                if state["stop_early"]:
                     break
+                pass_criteria = dict(base_criteria)
+                pass_criteria["num_elements"] = (int(ne_lo), int(ne_hi))
+                LOG.warning(
+                    "Pass %d/%d: num_elements=%s (rows so far: %d)",
+                    pass_idx, len(cfg.nelements_passes),
+                    pass_criteria["num_elements"], state["total_saved"],
+                )
+                _run_search_pass(mpr, pass_criteria, fields, cfg, out_csv, state)
+                LOG.warning(
+                    "Pass %d/%d done. Total rows saved: %d",
+                    pass_idx, len(cfg.nelements_passes), state["total_saved"],
+                )
 
     except Exception as exc:
         partial = True
         last_error = str(exc)
         LOG.exception("Acquisition interrupted; writing partial progress.")
     finally:
-        _write_progress(rows_buffer, out_csv, append=not is_first_flush)
+        if state["rows_buffer"]:
+            _write_progress(state["rows_buffer"], out_csv, append=not state["is_first_flush"])
+            state["rows_buffer"].clear()
         _write_summary(
             summary_path=summary_path,
             partial=partial,
             error_msg=last_error,
-            total=total_saved,
-            missing_bg=missing_bg_count,
-            tier_counts=tier_counts,
+            total=state["total_saved"],
+            missing_bg=state["missing_bg_count"],
+            tier_counts=state["tier_counts"],
         )
 
-    return total_saved
+    return state["total_saved"]
 
 
 def main() -> int:
@@ -213,7 +284,7 @@ def main() -> int:
     parser.add_argument(
         "--out",
         type=str,
-        default=str(Path("data") / "raw" / "deepesense_master_v1.csv"),
+        default=str(Path("data") / "raw" / "deepesense_candidates.csv"),
         help="Output master CSV path.",
     )
     parser.add_argument(

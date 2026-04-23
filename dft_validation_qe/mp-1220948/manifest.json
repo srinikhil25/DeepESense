@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-1220948",
+  "formula": "NaPrF4",
+  "selection_reason": "finite_gap_consensus",
+  "stage1_xgb_eV": 7.008854,
+  "stage2_xgb_eV": 7.008853912353516,
+  "stage2_gnn_eV": 6.919483661651611,
+  "disagreement_eV": -0.0893702507019043,
+  "agreement_class": "agree",
+  "kpoints_scf": [
+    5,
+    4,
+    4
+  ],
+  "kpoints_nscf": [
+    9,
+    7,
+    7
+  ],
+  "nbnd": 206,
+  "n_atoms": 18,
+  "lattice_abc": [
+    6.090503646145998,
+    7.129958230941698,
+    7.140921482517688
+  ],
+  "elements": [
+    "F",
+    "Na",
+    "Pr"
+  ],
+  "pseudo_map": {
+    "Pr": "Pr.paw.z_13.atompaw.wentzcovitch.v1.2.upf",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Na": "na_pbe_v1.5.uspp.F.UPF"
+  }
+}

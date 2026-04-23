@@ -1,0 +1,12 @@
+{
+  "best_epoch": 40,
+  "best_val_mae": 0.39116,
+  "test_mae": 0.42794,
+  "test_r2": 0.80729,
+  "n_train": 31186,
+  "n_val": 6393,
+  "n_test": 6485,
+  "split_method": "by_chemsys_hash",
+  "split_seed": 42,
+  "split_path": "models\\holdout_split_v1.json"
+}

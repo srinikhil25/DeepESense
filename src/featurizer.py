@@ -115,13 +115,13 @@ def main() -> int:
         "--in",
         dest="inp",
         type=str,
-        default=str(Path("data") / "raw" / "deepesense_master_v1.csv"),
+        default=str(Path("data") / "raw" / "deepesense_candidates.csv"),
         help="Input master CSV.",
     )
     parser.add_argument(
         "--out",
         type=str,
-        default=str(Path("data") / "processed" / "deepesense_features_v1.csv"),
+        default=str(Path("data") / "processed" / "deepesense_features.csv"),
         help="Output feature CSV path.",
     )
     parser.add_argument("--n-jobs", type=int, default=-1, help="Parallel workers for matminer (-1 = all cores).")

@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-1196923",
+  "formula": "Li2TbF6",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 6.357351,
+  "stage2_xgb_eV": 6.357350826263428,
+  "stage2_gnn_eV": 7.470932960510254,
+  "disagreement_eV": 1.1135821342468262,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    4,
+    6,
+    3
+  ],
+  "kpoints_nscf": [
+    7,
+    10,
+    4
+  ],
+  "nbnd": 316,
+  "n_atoms": 36,
+  "lattice_abc": [
+    7.668956900015869,
+    5.082072,
+    11.716994045498744
+  ],
+  "elements": [
+    "F",
+    "Li",
+    "Tb"
+  ],
+  "pseudo_map": {
+    "Tb": "Tb.paw.z_19.atompaw.wentzcovitch.v1.2.upf",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Li": "li_pbe_v1.4.uspp.F.UPF"
+  }
+}

@@ -1,0 +1,43 @@
+&CONTROL
+  pseudo_dir = '/mnt/d/DeepESense/pseudo/SSSP_1.3.0_PBE_efficiency',
+  calculation = 'scf',
+  restart_mode = 'from_scratch',
+  tprnfor = .TRUE.,
+  tstress = .TRUE.,
+/
+&SYSTEM
+  degauss = 0.005,
+  ecutrho = 480.0,
+  ecutwfc = 60.0,
+  nbnd = 71,
+  occupations = 'smearing',
+  smearing = 'marzari-vanderbilt',
+  ibrav = 0,
+  nat = 6,
+  ntyp = 2,
+/
+&ELECTRONS
+  conv_thr = 1d-08,
+  electron_maxstep = 200,
+  mixing_beta = 0.4,
+/
+&IONS
+/
+&CELL
+/
+ATOMIC_SPECIES
+  F  18.9984 f_pbe_v1.4.uspp.F.UPF
+  Ni  58.6934 ni_pbe_v1.4.uspp.F.UPF
+ATOMIC_POSITIONS crystal
+  Ni 0.000000 0.000000 0.000000
+  Ni 0.500000 0.500000 0.500000
+  F 0.000000 0.287893 0.319168
+  F 0.500000 0.212107 0.819168
+  F 0.000000 0.712107 0.680832
+  F 0.500000 0.787893 0.180832
+K_POINTS automatic
+  10 7 7 0 0 0
+CELL_PARAMETERS angstrom
+  3.079543 0.000000 0.000000
+  0.000000 4.584941 0.000000
+  0.000000 0.000000 4.676326

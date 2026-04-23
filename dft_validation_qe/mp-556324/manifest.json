@@ -1,0 +1,35 @@
+{
+  "material_id": "mp-556324",
+  "formula": "NiF2",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 4.464553,
+  "stage2_xgb_eV": 4.464552879333496,
+  "stage2_gnn_eV": 3.243619918823242,
+  "disagreement_eV": -1.220932960510254,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    10,
+    7,
+    7
+  ],
+  "kpoints_nscf": [
+    17,
+    11,
+    11
+  ],
+  "nbnd": 71,
+  "n_atoms": 6,
+  "lattice_abc": [
+    3.0795428,
+    4.58494077,
+    4.6763261400000005
+  ],
+  "elements": [
+    "F",
+    "Ni"
+  ],
+  "pseudo_map": {
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Ni": "ni_pbe_v1.4.uspp.F.UPF"
+  }
+}

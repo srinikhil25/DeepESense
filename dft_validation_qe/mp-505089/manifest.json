@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-505089",
+  "formula": "Li4TbF8",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 5.9424896,
+  "stage2_xgb_eV": 5.9424896240234375,
+  "stage2_gnn_eV": 7.388926982879639,
+  "disagreement_eV": 1.4464373588562012,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    5,
+    3,
+    3
+  ],
+  "kpoints_nscf": [
+    9,
+    5,
+    5
+  ],
+  "nbnd": 373,
+  "n_atoms": 52,
+  "lattice_abc": [
+    5.832096,
+    9.912033,
+    10.074722
+  ],
+  "elements": [
+    "F",
+    "Li",
+    "Tb"
+  ],
+  "pseudo_map": {
+    "Tb": "Tb.paw.z_19.atompaw.wentzcovitch.v1.2.upf",
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Li": "li_pbe_v1.4.uspp.F.UPF"
+  }
+}

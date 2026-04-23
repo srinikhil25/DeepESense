@@ -1,0 +1,37 @@
+{
+  "material_id": "mp-622591",
+  "formula": "BaTbF6",
+  "selection_reason": "strong_disagreement",
+  "stage1_xgb_eV": 4.892556,
+  "stage2_xgb_eV": 4.892556190490723,
+  "stage2_gnn_eV": 6.321406364440918,
+  "disagreement_eV": 1.428850173950195,
+  "agreement_class": "strong",
+  "kpoints_scf": [
+    4,
+    4,
+    4
+  ],
+  "kpoints_nscf": [
+    7,
+    6,
+    6
+  ],
+  "nbnd": 436,
+  "n_atoms": 32,
+  "lattice_abc": [
+    7.522837,
+    8.807574842585103,
+    8.943200755865153
+  ],
+  "elements": [
+    "Ba",
+    "F",
+    "Tb"
+  ],
+  "pseudo_map": {
+    "F": "f_pbe_v1.4.uspp.F.UPF",
+    "Tb": "Tb.paw.z_19.atompaw.wentzcovitch.v1.2.upf",
+    "Ba": "Ba.pbe-spn-kjpaw_psl.1.0.0.UPF"
+  }
+}
